@@ -163,10 +163,385 @@ const doughItems = doughJSON.map(normalizeDough);
 const ingredientItems = ingredientsJSON.map(normalizeIngredients);
 const sauceItems = saucesJSON.map(normalizeSauces);
 const sizeItems = sizesJSON.map(normalizeSize);
-console.log(ingredientItems);
+
+const images = import.meta.glob('../assets/img/**/*', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+});
+
 const getImage = (image) => {
-  // https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
-  return new URL(`../assets/img/${image}`, import.meta.url).href;
+  return images[`../assets/img/${image}`];
 };
-console.log(ingredientItems);
 </script>
+
+<style scoped lang="scss">
+@use '@/assets/scss/ds-system/ds-typography';
+@use '@/assets/scss/ds-system/ds-colors';
+@use '@/assets/scss/ds-system/ds-shadows';
+@use '@/assets/scss/mixins/m_center';
+@use '@/assets/scss/mixins/m_clear-list';
+.content {
+  padding-top: 20px;
+}
+
+.content__wrapper {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  width: 920px;
+  margin: 0 auto;
+  padding-right: 2.12%;
+  padding-bottom: 30px;
+  padding-left: 2.12%;
+}
+
+.content__dough {
+  width: 527px;
+  margin-top: 15px;
+  margin-right: auto;
+  margin-bottom: 15px;
+}
+
+.content__diameter {
+  width: 373px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.content__ingredients {
+  width: 527px;
+  margin-top: 15px;
+  margin-right: auto;
+  margin-bottom: 15px;
+}
+
+.content__pizza {
+  width: 373px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.content__constructor {
+  width: 315px;
+  margin-top: 25px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.content__result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 25px;
+
+  p {
+    @include ds-typography.b-s24-h28;
+
+    margin: 0;
+  }
+
+  button {
+    margin-left: 12px;
+    padding: 16px 45px;
+  }
+}
+
+.sheet {
+  padding-top: 15px;
+
+  border-radius: 8px;
+  background-color: ds-colors.$white;
+  box-shadow: ds-shadows.$shadow-light;
+}
+
+.sheet__title {
+  padding-right: 18px;
+  padding-left: 18px;
+}
+
+.sheet__content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  margin-top: 8px;
+  padding-top: 18px;
+  padding-right: 18px;
+  padding-left: 18px;
+
+  border-top: 1px solid rgba(ds-colors.$green-500, 0.1);
+}
+
+.dough__input {
+  position: relative;
+
+  margin-right: 8%;
+  margin-bottom: 20px;
+  padding-left: 50px;
+
+  cursor: pointer;
+
+  b {
+    @include ds-typography.r-s16-h19;
+
+    &::before {
+      @include m_center.p_center-v;
+
+      width: 36px;
+      height: 36px;
+
+      content: '';
+      transition: 0.3s;
+
+      border-radius: 50%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+  }
+
+  span {
+    @include ds-typography.l-s11-h13;
+
+    display: block;
+  }
+
+  &--light {
+    b {
+      &::before {
+        background-image: url('../img/dough-light.svg');
+      }
+    }
+  }
+
+  &--large {
+    b {
+      &::before {
+        background-image: url('../img/dough-large.svg');
+      }
+    }
+  }
+
+  &:hover {
+    b::before {
+      box-shadow: ds-shadows.$shadow-regular;
+    }
+  }
+
+  input {
+    &:checked + b::before {
+      box-shadow: ds-shadows.$shadow-large;
+    }
+  }
+}
+
+.diameter__input {
+  margin-right: 8.7%;
+  margin-bottom: 20px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+
+  cursor: pointer;
+
+  span {
+    @include ds-typography.r-s16-h19;
+
+    position: relative;
+
+    padding-left: 46px;
+
+    &::before {
+      @include m_center.p_center_v;
+
+      width: 36px;
+      height: 36px;
+
+      content: '';
+      transition: 0.3s;
+
+      border-radius: 50%;
+      background-color: ds-colors.$green-100;
+      background-image: url('../img/diameter.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+
+  &:nth-child(3n) {
+    margin-right: 0;
+  }
+
+  &--small {
+    span::before {
+      background-size: 18px;
+    }
+  }
+
+  &--normal {
+    span::before {
+      background-size: 29px;
+    }
+  }
+
+  &--big {
+    span::before {
+      background-size: 100%;
+    }
+  }
+
+  &:hover {
+    span::before {
+      box-shadow: ds-shadows.$shadow-regular;
+    }
+  }
+
+  input {
+    &:checked + span::before {
+      box-shadow: ds-shadows.$shadow-large;
+    }
+  }
+}
+.filling {
+  @include ds-typography.r-s14-h16;
+
+  position: relative;
+
+  display: block;
+
+  padding-left: 36px;
+
+  &::before {
+    @include m_center.p_center-v;
+
+    display: block;
+
+    width: 32px;
+    height: 32px;
+
+    content: '';
+
+    border-radius: 50%;
+    background-color: ds-colors.$white;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80% 80%;
+  }
+
+  &--tomatoes::before {
+    background-image: url('../img/filling/tomatoes.svg');
+  }
+
+  &--ananas::before {
+    background-image: url('../img/filling/ananas.svg');
+  }
+
+  &--bacon::before {
+    background-image: url('../img/filling/bacon.svg');
+  }
+
+  &--blue_cheese::before {
+    background-image: url('../img/filling/blue_cheese.svg');
+  }
+
+  &--cheddar::before {
+    background-image: url('../img/filling/cheddar.svg');
+  }
+
+  &--chile::before {
+    background-image: url('../img/filling/chile.svg');
+  }
+
+  &--ham::before {
+    background-image: url('../img/filling/ham.svg');
+  }
+
+  &--jalapeno::before {
+    background-image: url('../img/filling/jalapeno.svg');
+  }
+
+  &--mozzarella::before {
+    background-image: url('../img/filling/mozzarella.svg');
+  }
+
+  &--mushrooms::before {
+    background-image: url('../img/filling/mushrooms.svg');
+  }
+
+  &--olives::before {
+    background-image: url('../img/filling/olives.svg');
+  }
+
+  &--onion::before {
+    background-image: url('../img/filling/onion.svg');
+  }
+
+  &--parmesan::before {
+    background-image: url('../img/filling/parmesan.svg');
+  }
+
+  &--salami::before {
+    background-image: url('../img/filling/salami.svg');
+  }
+
+  &--salmon::before {
+    background-image: url('../img/filling/salmon.svg');
+  }
+}
+
+.ingredients__sauce {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  width: 100%;
+  margin-bottom: 14px;
+
+  p {
+    @include ds-typography.r-s16-h19;
+
+    margin-top: 0;
+    margin-right: 16px;
+    margin-bottom: 10px;
+  }
+}
+
+.ingredients__input {
+  margin-right: 24px;
+  margin-bottom: 10px;
+}
+
+.ingredients__filling {
+  width: 100%;
+
+  p {
+    @include ds-typography.r-s16-h19;
+
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+}
+
+.ingredients__list {
+  @include m_clear-list.clear-list;
+
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.ingredients__item {
+  width: 100px;
+  min-height: 40px;
+  margin-right: 17px;
+  margin-bottom: 35px;
+}
+
+.ingredients__counter {
+  width: 54px;
+  margin-top: 10px;
+  margin-left: 36px;
+}
+</style>
