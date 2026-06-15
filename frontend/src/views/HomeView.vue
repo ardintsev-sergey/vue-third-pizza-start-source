@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import DoughSelector from '@/moduls/constructor/DoughSelector.vue';
+import DoughSelector from '@/modules/constructor/DoughSelector.vue';
 import DiameterSelector from '@/modules/constructor/DiameterSelector.vue';
 import SauceSelector from '@/modules/constructor/SauceSelector.vue';
 import IngredientsSelector from '@/modules/constructor/IngredientsSelector.vue';
