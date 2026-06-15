@@ -9,6 +9,7 @@
         <dough-selector
           v-model="pizza.dough"
           :items="doughItems" />
+
         <diameter-selector
           v-model="pizza.size"
           :items="sizeItems" />
@@ -17,45 +18,44 @@
           <div class="sheet">
             <h2 class="title title--small sheet__title">Выберите ингредиенты</h2>
 
-            <div class="sheet__content ingredients"></div>
-
-            <div class="ingredients__filling">
-              <p>Начинка:</p>
+            <div class="sheet__content ingredients">
               <sauce-selector
                 v-model="pizza.sauce"
                 :items="sauceItems" />
+
               <ingredients-selector
                 :values="pizza.ingredients"
                 :items="ingredientItems"
                 @update="updateIngredientAmount" />
             </div>
           </div>
+        </div>
+
+        <div class="content__pizza">
+          <label class="input">
+            <span class="visually-hidden">Название пиццы</span>
+            <input
+              v-model="pizza.name"
+              type="text"
+              name="pizza_name"
+              placeholder="Введите название пиццы" />
+          </label>
 
           <pizza-constructor
             :dough="pizza.dough"
             :sauce="pizza.sauce"
             :ingredients="pizza.ingredients"
             @drop="addIngredient" />
-        </div>
-      </div>
 
-      <div class="content__pizza">
-        <label class="input">
-          <span class="visually-hidden">Название пиццы</span>
-          <input
-            type="text"
-            name="pizza_name"
-            placeholder="Введите название пиццы" />
-        </label>
-
-        <div class="content__result">
-          <p>Итого: 0 ₽</p>
-          <button
-            type="button"
-            class="button"
-            disabled>
-            Готовьте!
-          </button>
+          <div class="content__result">
+            <p>Итого: {{ price }} ₽</p>
+            <button
+              type="button"
+              class="button"
+              :disabled="disableSubmit">
+              Готовьте!
+            </button>
+          </div>
         </div>
       </div>
     </form>
@@ -63,18 +63,18 @@
 </template>
 
 <script setup>
-import DoughSelector from '@/modules/constructor/DoughSelector.vue';
-import DiameterSelector from '@/modules/constructor/DiameterSelector.vue';
-import SauceSelector from '@/modules/constructor/SauceSelector.vue';
-import IngredientsSelector from '@/modules/constructor/IngredientsSelector.vue';
-import PizzaConstructor from '@/modules/constructor/PizzaConstructor.vue';
+import { computed, reactive } from 'vue';
 import {
   normalizeDough,
   normalizeIngredients,
   normalizeSauces,
   normalizeSize,
 } from '@/common/helpers/normalize';
-
+import DoughSelector from '@/modules/constructor/DoughSelector.vue';
+import DiameterSelector from '@/modules/constructor/DiameterSelector.vue';
+import SauceSelector from '@/modules/constructor/SauceSelector.vue';
+import IngredientsSelector from '@/modules/constructor/IngredientsSelector.vue';
+import PizzaConstructor from '@/modules/constructor/PizzaConstructor.vue';
 import doughJSON from '@/mocks/dough.json';
 import ingredientsJSON from '@/mocks/ingredients.json';
 import saucesJSON from '@/mocks/sauces.json';
@@ -84,16 +84,6 @@ const doughItems = doughJSON.map(normalizeDough);
 const ingredientItems = ingredientsJSON.map(normalizeIngredients);
 const sauceItems = saucesJSON.map(normalizeSauces);
 const sizeItems = sizesJSON.map(normalizeSize);
-
-// const images = import.meta.glob('../assets/img/**/*', {
-//   eager: true,
-//   import: 'default',
-//   query: '?url',
-// });
-
-// const getImage = (image) => {
-//   return images[`../assets/img/${image}`];
-// };
 
 const pizza = reactive({
   name: '',
@@ -117,8 +107,8 @@ const price = computed(() => {
 
   /*
    * Здесь мы при помощи метода map превращаем массив ингредиентов
-   * в массив значений, соответствующих итоговой стоимости каждого из них — просто умножаем цену на количество.
-   * После чего методом reduce вычисляем сумму всех элементов массива. Это даёт нам общую стоимость ингредиентов.
+   * в массив значений, соответствующих итоговой стоимости каждого из них - просто умножив известную цену на количество.
+   * После чего методом reduce вычисляем сумму всех элементов массива, что даст нам общую стоимость всех ингредиентов.
    */
   const ingredientsPrice = ingredientItems
     .map((item) => ingredients[item.value] * item.price)
@@ -130,22 +120,20 @@ const price = computed(() => {
 const disableSubmit = computed(() => {
   return pizza.name.length === 0 || price.value === 0;
 });
+
 const addIngredient = (ingredient) => {
   pizza.ingredients[ingredient]++;
 };
+
 const updateIngredientAmount = (ingredient, count) => {
   pizza.ingredients[ingredient] = count;
 };
 </script>
 
-<style scoped lang="scss">
-@use '@/assets/scss/ds-system/ds-typography';
-@use '@/assets/scss/ds-system/ds-colors';
-@use '@/assets/scss/ds-system/ds-shadows';
-@use '@/assets/scss/mixins/m_center';
-@use '@/assets/scss/mixins/m_clear-list';
+<style lang="scss">
 @import '@/assets/scss/ds-system/ds.scss';
 @import '@/assets/scss/mixins/mixins.scss';
+
 .content {
   padding-top: 20px;
 }
@@ -183,7 +171,7 @@ const updateIngredientAmount = (ingredient, count) => {
   margin-top: 25px;
 
   p {
-    @include ds-typography.b-s24-h28;
+    @include b-s24-h28;
 
     margin: 0;
   }
@@ -198,8 +186,8 @@ const updateIngredientAmount = (ingredient, count) => {
   padding-top: 15px;
 
   border-radius: 8px;
-  background-color: ds-colors.$white;
-  box-shadow: ds-shadows.$shadow-light;
+  background-color: $white;
+  box-shadow: $shadow-light;
 }
 
 .sheet__title {
@@ -217,7 +205,7 @@ const updateIngredientAmount = (ingredient, count) => {
   padding-right: 18px;
   padding-left: 18px;
 
-  border-top: 1px solid rgba(ds-colors.$green-500, 0.1);
+  border-top: 1px solid rgba($green-500, 0.1);
 }
 
 .title {
@@ -225,14 +213,14 @@ const updateIngredientAmount = (ingredient, count) => {
   width: 100%;
   margin: 0;
 
-  color: ds-colors.$black;
+  color: $black;
 
   &--big {
-    @include ds-typography.b-s36-h42;
+    @include b-s36-h42;
   }
 
   &--small {
-    @include ds-typography.b-s18-h21;
+    @include b-s18-h21;
   }
 }
 
@@ -240,14 +228,14 @@ const updateIngredientAmount = (ingredient, count) => {
   cursor: pointer;
 
   span {
-    @include ds-typography.r-s16-h19;
+    @include r-s16-h19;
 
     position: relative;
 
     padding-left: 28px;
 
     &:before {
-      @include m_center.p_center-v;
+      @include p_center-v;
 
       display: block;
 
@@ -258,16 +246,16 @@ const updateIngredientAmount = (ingredient, count) => {
       content: '';
       transition: 0.3s;
 
-      border: 1px solid ds-colors.$purple-400;
+      border: 1px solid $purple-400;
       border-radius: 50%;
-      background-color: ds-colors.$white;
+      background-color: $white;
     }
   }
 
   &:hover {
     input:not(:checked):not(:disabled) + span {
       &:before {
-        border-color: ds-colors.$purple-800;
+        border-color: $purple-800;
       }
     }
   }
@@ -277,21 +265,21 @@ const updateIngredientAmount = (ingredient, count) => {
 
     &:checked + span {
       &:before {
-        border: 6px solid ds-colors.$green-500;
+        border: 6px solid $green-500;
       }
     }
 
     &:disabled {
       & + span {
         &:before {
-          border-color: ds-colors.$purple-400;
-          background-color: ds-colors.$silver-200;
+          border-color: $purple-400;
+          background-color: $silver-200;
         }
       }
 
       &:checked + span {
         &:before {
-          border: 6px solid ds-colors.$purple-400;
+          border: 6px solid $purple-400;
         }
       }
     }
@@ -301,7 +289,7 @@ const updateIngredientAmount = (ingredient, count) => {
 .button {
   $bl: &;
 
-  @include ds-typography.b-s18-h21;
+  @include b-s18-h21;
   font-family: inherit;
   display: block;
 
@@ -313,20 +301,20 @@ const updateIngredientAmount = (ingredient, count) => {
   transition: 0.3s;
   text-align: center;
 
-  color: ds-colors.$white;
+  color: $white;
   border: none;
   border-radius: 8px;
   outline: none;
-  box-shadow: ds-shadows.$shadow-medium;
+  box-shadow: $shadow-medium;
 
-  background-color: ds-colors.$green-500;
+  background-color: $green-500;
 
   &:hover:not(:active):not(:disabled) {
-    background-color: ds-colors.$green-400;
+    background-color: $green-400;
   }
 
   &:active:not(:disabled) {
-    background-color: ds-colors.$green-600;
+    background-color: $green-600;
   }
 
   &:focus:not(:disabled) {
@@ -334,26 +322,26 @@ const updateIngredientAmount = (ingredient, count) => {
   }
 
   &:disabled {
-    background-color: ds-colors.$green-300;
-    color: rgba(ds-colors.$white, 0.2);
+    background-color: $green-300;
+    color: rgba($white, 0.2);
     cursor: default;
   }
 
   &--border {
     background-color: transparent;
-    border: 1px solid ds-colors.$green-500;
-    color: ds-colors.$black;
+    border: 1px solid $green-500;
+    color: $black;
     box-shadow: none;
 
     &:hover:not(:active):not(:disabled) {
-      color: ds-colors.$green-500;
-      border-color: ds-colors.$green-500;
+      color: $green-500;
+      border-color: $green-500;
       background-color: transparent;
     }
 
     &:active:not(:disabled) {
-      color: ds-colors.$green-600;
-      border-color: ds-colors.$green-600;
+      color: $green-600;
+      border-color: $green-600;
       background-color: transparent;
     }
 
@@ -363,18 +351,18 @@ const updateIngredientAmount = (ingredient, count) => {
   }
 
   &--transparent {
-    @include ds-typography.b-s14-h16;
+    @include b-s14-h16;
     background-color: transparent;
     box-shadow: none;
-    color: ds-colors.$black;
+    color: $black;
 
     &:hover:not(:active):not(:disabled) {
-      color: ds-colors.$red-800;
+      color: $red-800;
       background-color: transparent;
     }
 
     &:active:not(:disabled) {
-      color: ds-colors.$red-900;
+      color: $red-900;
       background-color: transparent;
     }
 
@@ -386,7 +374,7 @@ const updateIngredientAmount = (ingredient, count) => {
   &--arrow {
     &::before {
       content: '';
-      background-image: url('../img/button-arrow.svg');
+      background-image: url('@/assets/img/button-arrow.svg');
       background-position: center;
       background-repeat: no-repeat;
       margin-right: 16px;
@@ -399,37 +387,8 @@ const updateIngredientAmount = (ingredient, count) => {
   }
 
   &--white {
-    background-color: ds-colors.$white;
-    color: ds-colors.$green-500;
-  }
-}
-
-.pizza {
-  position: relative;
-
-  display: block;
-
-  box-sizing: border-box;
-  width: 100%;
-
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
-
-  &--foundation--big-creamy {
-    background-image: url('../img/foundation/big-creamy.svg');
-  }
-
-  &--foundation--big-tomato {
-    background-image: url('../img/foundation/big-tomato.svg');
-  }
-
-  &--foundation--small-creamy {
-    background-image: url('../img/foundation/small-creamy.svg');
-  }
-
-  &--foundation--small-tomato {
-    background-image: url('../img/foundation/small-tomato.svg');
+    background-color: $white;
+    color: $green-500;
   }
 }
 
@@ -437,7 +396,7 @@ const updateIngredientAmount = (ingredient, count) => {
   display: block;
 
   span {
-    @include ds-typography.r-s14-h16;
+    @include r-s14-h16;
 
     display: block;
 
@@ -445,7 +404,7 @@ const updateIngredientAmount = (ingredient, count) => {
   }
 
   input {
-    @include ds-typography.r-s16-h19;
+    @include r-s16-h19;
 
     display: block;
 
@@ -456,22 +415,22 @@ const updateIngredientAmount = (ingredient, count) => {
 
     transition: 0.3s;
 
-    color: ds-colors.$black;
-    border: 1px solid ds-colors.$purple-400;
+    color: $black;
+    border: 1px solid $purple-400;
     border-radius: 8px;
     outline: none;
-    background-color: ds-colors.$white;
+    background-color: $white;
 
     font-family: inherit;
 
     &:focus {
-      border-color: ds-colors.$green-500;
+      border-color: $green-500;
     }
   }
 
   &:hover {
     input {
-      border-color: ds-colors.$black;
+      border-color: $black;
     }
   }
 
@@ -480,7 +439,7 @@ const updateIngredientAmount = (ingredient, count) => {
     align-items: center;
 
     span {
-      @include ds-typography.b-s16-h19;
+      @include b-s16-h19;
 
       margin-right: 16px;
 
