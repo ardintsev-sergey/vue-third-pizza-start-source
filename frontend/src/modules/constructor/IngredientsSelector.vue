@@ -1,5 +1,4 @@
 <template>
-  .
   <div class="ingredients__filling">
     <p>Начинка:</p>
     <ul class="ingredients__list">
@@ -21,8 +20,8 @@
           <button
             type="button"
             class="counter__button counter__button--minus"
-            :disabled="getValue(ingredientType.value) === 0"
-            @click="decrementValue(ingredientType.value)">
+            :disabled="getValue(ingredient.value) === 0"
+            @click="decrementValue(ingredient.value)">
             <span class="visually-hidden">Меньше</span>
           </button>
           <input
@@ -31,11 +30,10 @@
             class="counter__input"
             :value="getValue(ingredient.value)"
             @input="inputValue(ingredient.value, $event.target.value)" />
-          value="0" />
           <button
             type="button"
             class="counter__button counter__button--plus"
-            :disabled="getValue(ingredient.value) === 0"
+            :disabled="getValue(ingredient.value) === MAX_INGREDIENT_COUNT"
             @click="incrementValue(ingredient.value)">
             <span class="visually-hidden">Больше</span>
           </button>
@@ -49,6 +47,12 @@
 import { toRef } from 'vue';
 import AppDrag from '@/common/components/AppDrag.vue';
 import { MAX_INGREDIENT_COUNT } from '@/common/constants';
+
+const images = import.meta.glob('../../assets/img/filling/*.svg', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+});
 
 const props = defineProps({
   values: {
@@ -84,11 +88,19 @@ const inputValue = (ingredient, count) => {
 };
 
 const getImage = (image) => {
-  return new URL(`../../assets/img/${image}`, import.meta.url).href;
+  return images[`../../assets/img/${image}`];
 };
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/scss/ds-system/ds-typography';
+@use '@/assets/scss/ds-system/ds-colors';
+@use '@/assets/scss/ds-system/ds-shadows';
+@use '@/assets/scss/mixins/m_center';
+@use '@/assets/scss/mixins/m_clear-list';
+
+@import '@/assets/scss/ds-system/ds.scss';
+@import '@/assets/scss/mixins/mixins.scss';
 .ingredients__filling {
   width: 100%;
 
@@ -161,65 +173,6 @@ const getImage = (image) => {
     background-size: 80% 80%;
   }
 
-  &--tomatoes::before {
-    background-image: url('../img/filling/tomatoes.svg');
-  }
-
-  &--ananas::before {
-    background-image: url('../img/filling/ananas.svg');
-  }
-
-  &--bacon::before {
-    background-image: url('../img/filling/bacon.svg');
-  }
-
-  &--blue_cheese::before {
-    background-image: url('../img/filling/blue_cheese.svg');
-  }
-
-  &--cheddar::before {
-    background-image: url('../img/filling/cheddar.svg');
-  }
-
-  &--chile::before {
-    background-image: url('../img/filling/chile.svg');
-  }
-
-  &--ham::before {
-    background-image: url('../img/filling/ham.svg');
-  }
-
-  &--jalapeno::before {
-    background-image: url('../img/filling/jalapeno.svg');
-  }
-
-  &--mozzarella::before {
-    background-image: url('../img/filling/mozzarella.svg');
-  }
-
-  &--mushrooms::before {
-    background-image: url('../img/filling/mushrooms.svg');
-  }
-
-  &--olives::before {
-    background-image: url('../img/filling/olives.svg');
-  }
-
-  &--onion::before {
-    background-image: url('../img/filling/onion.svg');
-  }
-
-  &--parmesan::before {
-    background-image: url('../img/filling/parmesan.svg');
-  }
-
-  &--salami::before {
-    background-image: url('../img/filling/salami.svg');
-  }
-
-  &--salmon::before {
-    background-image: url('../img/filling/salmon.svg');
-  }
 }
 
 .counter {

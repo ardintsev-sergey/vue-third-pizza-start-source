@@ -39,6 +39,11 @@ const emit = defineEmits(['update:modelValue']);
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/scss/ds-system/ds-typography';
+@use '@/assets/scss/ds-system/ds-colors';
+@use '@/assets/scss/ds-system/ds-shadows';
+@use '@/assets/scss/mixins/m_center';
+
 @import '@/assets/scss/ds-system/ds.scss';
 @import '@/assets/scss/mixins/mixins.scss';
 .content__diameter {
@@ -73,7 +78,7 @@ const emit = defineEmits(['update:modelValue']);
     padding-left: 46px;
 
     &::before {
-      @include m_center.p_center_v;
+      @include m_center.p_center-v;
 
       width: 36px;
       height: 36px;
