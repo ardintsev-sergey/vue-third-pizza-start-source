@@ -1,18 +1,18 @@
 <template>
   <div class="content__constructor">
-    <app-drop @drop="emit('drop', $event.value)">
+    <app-drop @drop="emit('drop', $event.id)">
       <div
         class="pizza"
         :class="`pizza--foundation--${dough}-${sauce}`">
         <div class="pizza__wrapper">
           <div
-            v-for="(value, key) in pizzaIngredients"
-            :key="key"
+            v-for="item in ingredients"
+            :key="item.id"
             class="pizza__filling"
             :class="[
-              `pizza__filling--${key}`,
-              value === TWO_INGREDIENTS && 'pizza__filling--second',
-              value === THREE_INGREDIENTS && 'pizza__filling--third',
+              `pizza__filling--${item.value}`,
+              item.quantity === TWO_INGREDIENTS && 'pizza__filling--second',
+              item.quantity === THREE_INGREDIENTS && 'pizza__filling--third',
             ]" />
         </div>
       </div>
@@ -21,50 +21,30 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import AppDrop from '@/common/components/AppDrop.vue';
+
 const TWO_INGREDIENTS = 2;
 const THREE_INGREDIENTS = 3;
 
-const props = defineProps({
+defineProps({
   dough: {
     type: String,
-    default: 'light',
+    default: '',
   },
   sauce: {
     type: String,
-    default: 'tomato',
+    default: '',
   },
   ingredients: {
-    type: Object,
-    default: () => ({}),
+    type: Array,
+    default: () => [],
   },
 });
 
 const emit = defineEmits(['drop']);
-
-const pizzaIngredients = computed(() => {
-  /*
-   * props.ingredients - это объект с ингредиентами вида { ингредиент: количество }
-   * при помощи reduce нужно оставить только те, количество которые больше 0
-   * для этого перебираем каждую пару [ингредиент, количество]
-   * и если количество больше 0, добавляем в объект-результат
-   */
-  return Object.entries(props.ingredients).reduce((result, entry) => {
-    /* [ингредиент, количество] */
-    const [key, value] = entry;
-    if (value > 0) {
-      result[key] = value;
-    }
-
-    return result;
-  }, {});
-});
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/ds-system/ds.scss';
-@import '@/assets/scss/mixins/mixins.scss';
 .content__constructor {
   width: 315px;
   margin-top: 25px;
@@ -82,9 +62,12 @@ const pizzaIngredients = computed(() => {
   position: absolute;
   top: 0;
   left: 0;
+
   display: block;
+
   width: 100%;
   height: 100%;
+
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
@@ -92,18 +75,23 @@ const pizzaIngredients = computed(() => {
   &::before,
   &::after {
     display: none;
+
     position: absolute;
     top: 0;
     left: 0;
+
     width: 100%;
     height: 100%;
+
     content: '';
+
     background-image: inherit;
   }
 
   &--second {
     &::before {
       display: block;
+
       transform: rotate(45deg);
     }
   }
@@ -111,10 +99,13 @@ const pizzaIngredients = computed(() => {
   &--third {
     &::before {
       display: block;
+
       transform: rotate(45deg);
     }
+
     &::after {
       display: block;
+
       transform: rotate(-45deg);
     }
   }
@@ -212,9 +203,12 @@ const pizzaIngredients = computed(() => {
 
 .pizza {
   position: relative;
+
   display: block;
+
   box-sizing: border-box;
   width: 100%;
+
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
