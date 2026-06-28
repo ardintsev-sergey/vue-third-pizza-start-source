@@ -5,7 +5,7 @@
         :to="{ name: 'home' }"
         class="logo layout__logo">
         <img
-          src="@/assets/img/logo.svg"
+          :src="getPublicImage('/public/img/logo.svg')"
           alt="V!U!E! Pizza logo"
           width="90"
           height="40" />
@@ -19,6 +19,10 @@
     </div>
   </main>
 </template>
+
+<script setup>
+import { getPublicImage } from '@/common/helpers/public-image';
+</script>
 
 <style lang="scss">
 @import '@/assets/scss/ds-system/ds.scss';
@@ -89,12 +93,6 @@
   $self: &;
   margin-top: 40px;
 
-  /* 
-   * Добавив дополнительный селектор [type="button"], 
-   * мы удлиняем общую цепочку селекторов для элемента.
-   * Это позволяет поставить стили, соответствующие этому селектору, последними в очереди
-   * и получить именно те стили, которые указаны — игнорируя остальные.
-   */
   button[type='button'] {
     padding: 12px 23px;
   }

@@ -16,7 +16,7 @@
             class="visually-hidden"
             @input="emit('update:modelValue', doughType.id)" />
           <img
-            :src="getImage(doughType.image)"
+            :src="getPublicImage(doughType.image)"
             :alt="doughType.name" />
 
           <b>{{ doughType.name }}</b>
@@ -28,6 +28,8 @@
 </template>
 
 <script setup>
+import { getPublicImage } from '@/common/helpers/public-image';
+
 defineProps({
   modelValue: {
     type: Number,
@@ -40,10 +42,6 @@ defineProps({
 });
 
 const emit = defineEmits(['update:modelValue']);
-
-const getImage = (image) => {
-  return new URL(`../../assets/img/${image}`, import.meta.url).href;
-};
 </script>
 
 <style lang="scss" scoped>
@@ -59,16 +57,21 @@ const getImage = (image) => {
 
 .dough__input {
   position: relative;
+
   margin-right: 8%;
   margin-bottom: 20px;
   padding-left: 50px;
+
   cursor: pointer;
 
   img {
     @include p_center-v;
+
     width: 36px;
     height: 36px;
+
     transition: 0.3s;
+
     border-radius: 50%;
   }
 
@@ -78,6 +81,7 @@ const getImage = (image) => {
 
   span {
     @include l-s11-h13;
+
     display: block;
   }
 

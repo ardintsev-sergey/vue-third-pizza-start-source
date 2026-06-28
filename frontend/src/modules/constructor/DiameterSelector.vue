@@ -3,7 +3,7 @@
     <div class="sheet">
       <h2 class="title title--small sheet__title">Выберите размер</h2>
 
-      <div class="sheet__content diameter">
+      <div class="sheet__content">
         <label
           v-for="sizeType in items"
           :key="sizeType.id"
@@ -39,13 +39,9 @@ const emit = defineEmits(['update:modelValue']);
 </script>
 
 <style lang="scss" scoped>
-@use '@/assets/scss/ds-system/ds-typography';
-@use '@/assets/scss/ds-system/ds-colors';
-@use '@/assets/scss/ds-system/ds-shadows';
-@use '@/assets/scss/mixins/m_center';
-
 @import '@/assets/scss/ds-system/ds.scss';
 @import '@/assets/scss/mixins/mixins.scss';
+
 .content__diameter {
   width: 373px;
   margin-top: 15px;
@@ -60,25 +56,15 @@ const emit = defineEmits(['update:modelValue']);
 
   cursor: pointer;
 
-  img {
-    @include p_center-v;
-
-    width: 36px;
-    height: 36px;
-
-    transition: 0.3s;
-
-    border-radius: 50%;
-  }
   span {
-    @include ds-typography.r-s16-h19;
+    @include r-s16-h19;
 
     position: relative;
 
     padding-left: 46px;
 
     &::before {
-      @include m_center.p_center-v;
+      @include p_center_v;
 
       width: 36px;
       height: 36px;
@@ -87,8 +73,8 @@ const emit = defineEmits(['update:modelValue']);
       transition: 0.3s;
 
       border-radius: 50%;
-      background-color: ds-colors.$green-100;
-      background-image: url('../img/diameter.svg');
+      background-color: $green-100;
+      background-image: url('/api/public/img/diameter.svg');
       background-repeat: no-repeat;
       background-position: center;
     }
@@ -118,13 +104,13 @@ const emit = defineEmits(['update:modelValue']);
 
   &:hover {
     span::before {
-      box-shadow: ds-shadows.$shadow-regular;
+      box-shadow: $shadow-regular;
     }
   }
 
   input {
     &:checked + span::before {
-      box-shadow: ds-shadows.$shadow-large;
+      box-shadow: $shadow-large;
     }
   }
 }
